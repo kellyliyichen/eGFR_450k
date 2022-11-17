@@ -1,6 +1,6 @@
 The dataset here is for demonstration only and should not be used to run.
 
-### meth_cg.txt
+### meth_eg.txt
 Methylation level matrix.
 
 Each row is a CpG site; each column is a sample.
