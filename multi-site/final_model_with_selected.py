@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import re
 
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 
 from sklearn import linear_model
@@ -171,7 +170,6 @@ if __name__ == "__main__":
     selected_features = get_selected_features(selected_feature_file)
     meth, sample = load_data(meth_file, sample_file, selected_features)
     print("=============Loading data finished=============")
-
 
 
     performance_file = open(final_dir + 'performance.csv', 'w')

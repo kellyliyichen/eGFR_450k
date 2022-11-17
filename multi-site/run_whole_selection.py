@@ -432,9 +432,6 @@ if __name__ == "__main__":
     performance_df.to_csv(out_dir + 'evaluate_performance.csv', sep=',', header=True, index=False)
 
 
-
-
-
     print("=============Determine feature selection threshold=============")
     performance_df = pd.read_csv(out_dir + 'evaluate_performance.csv', sep=',', header=0)
     selected_features = pd.read_csv(out_dir + 'selected_CpG.csv', sep=',', names=['feature', 'weights']).iloc[:,0].values
