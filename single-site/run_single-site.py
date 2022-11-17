@@ -13,6 +13,7 @@ from sklearn.decomposition import PCA
 import statsmodels.stats.multitest as mttest
 
 import sys
+import os
 
 
 
@@ -29,12 +30,12 @@ def data_preprocess_standardize(meth, sample, dep_name='eGFR_CKDEPI',
                     cov_name = ['SEX_new', 'AGE', 'SMOKING_new', 'DMAGE', 'HBA1C', 'SBP', 'DBP',
                                 'CD8T', 'CD4T', 'NK', 'Bcell', 'Mono', 'Gran',
                                 'sentrix_code', 'sentrix_pos', 'sample_plate', 'sample_well']):
-    '''
+    """
     meth: df, methylation matrix, each row is a sample, each column is a CpG site.
     sample: df, sample information matrix, each row is a sample, each column is a clinical variable, containing covariates that need to be adjusted and the dependent variable.
     dep_name: str, name of the dependent variable. In this case, it is either 'eGFR_CKDEPI' or 'eGFR_slope'.
     cov_name: list of str, counfounding factors.
-'''
+"""
     var = sample.loc[:,cov_name]
     ## remove samples with "NA"
     var.dropna(axis = 'index', how = 'any', inplace=True)
@@ -48,7 +49,6 @@ def data_preprocess_standardize(meth, sample, dep_name='eGFR_CKDEPI',
     dataX_scale_df = pd.DataFrame(data=dataX_scale, index=dataX.index, columns=dataX.columns)
 
 
-
     dep_var = sample.loc[:,dep_name]
     ## remove samples with "NA" y
     dep_var.dropna(axis = 'index', how = 'any', inplace=True)
@@ -60,7 +60,7 @@ def data_preprocess_standardize(meth, sample, dep_name='eGFR_CKDEPI',
     X = data.iloc[:, 0:m-1]
     y = data.iloc[:, m-1]
     n_samples, n_features = X.shape
-    print('There are {} samples and {} features.'.format(n_samples, n_features))
+    print("There are {} samples and {} features.".format(n_samples, n_features))
     return X, y
 
 def process_single_site(X, i, y):
@@ -72,7 +72,7 @@ def process_single_site(X, i, y):
     X = data.iloc[:, 0:m-1]
     y = data.iloc[:, m-1]
 
-    assert X.shape[1] == 18, 'No. of feature is not correct!'
+    assert X.shape[1] == 18, "No. of feature is not correct!"
     X = sm.add_constant(X) # adding a constant
     model = sm.OLS(y, X).fit()
     #print(model.summary())
@@ -82,16 +82,20 @@ def process_single_site(X, i, y):
 
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     dep_name = sys.argv[1]
     ## e.g., eGFR_CKDEPI or eGFR_slope
     data_dir = sys.argv[2]
     ## e.g., '../example_data/'
-    meth_file = data_dir + sys.argv[3]
-    ## e.g., '../example_data/meth_ex.txt'
-    sample_file = data_dir + sys.argv[4]
-    ## e.g., '../example_data/sample.csv'
+    meth_file = sys.argv[3]
+    ## e.g., '../example_data/meth_eg.txt'
+    sample_file = sys.argv[4]
+    ## e.g., '../example_data/sample_eg.csv'
+    res_dir = sys.argv[5]
+    ## e.g., './CpG_pvals/'
+
+    if not os.path.exists(res_dir):
+        os.makedirs(res_dir)
 
     print("=============Loading data=============")
     meth, sample = load_data(meth_file, sample_file)
@@ -102,10 +106,9 @@ if __name__ == '__main__':
     print("=============Data preprocessing finished=============")
 
 
-
     lr_metrics = []
     n_sites = meth.shape[1]
-    print('Total number of sites: {}'.format(n_sites))
+    print("Total number of sites: {}".format(n_sites))
     for i in range(n_sites):
         #if i%10000 == 0:
         #    print(i)
@@ -125,5 +128,4 @@ if __name__ == '__main__':
     #lr_metrics_df.sort_values(by='fdr_bh', inplace=True)
     lr_metrics_df.sort_values(by='pval', inplace=True)
 
-
-    lr_metrics_df.to_csv('./CpG_pvals/CpG_lr_cov_' + dep_name + '.csv', sep=',', index=True, header=True)
+    lr_metrics_df.to_csv(res_dir + 'CpG_lr_cov_' + dep_name + '.csv', sep=',', index=True, header=True)
