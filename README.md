@@ -15,3 +15,12 @@ Please contact me (<yli@sbpdiscovery.org>) if you have any questions.
 - [scikit-learn ](https://scikit-learn.org/stable/) (>=0.20)
 - [statsmodels](https://www.statsmodels.org/stable/index.html) (>=0.9)
 - [Matplotlib](https://matplotlib.org/) (>=3.0)
+
+### example_data
+This folder contains the example methylation data and sample annotations.
+
+### Single-site
+This folder contains the code and example results for running the single-site analysis.
+
+### Multi-site
+This folder contains the code and example results for running the multi-site analysis.
