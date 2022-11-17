@@ -16,8 +16,8 @@ from sklearn.model_selection import GridSearchCV
 
 import matplotlib.pyplot as plt
 
-
 from scipy import stats
+import os
 
 # calculate aic for regression
 def calculate_aic(n, mse, num_params):
@@ -60,10 +60,6 @@ def load_data(meth_file, sample_file, selected_features):
     return meth_select, sample
 
 
-
-
-
-
 def data_preprocess_standardize(meth, sample, dep_name,
                     cov_name = ['SEX_new', 'AGE', 'SMOKING_new', 'DMAGE', 'HBA1C', 'SBP', 'DBP',
                                 'CD8T', 'CD4T', 'NK', 'Bcell', 'Mono', 'Gran',
@@ -103,8 +99,6 @@ def data_preprocess_standardize(meth, sample, dep_name,
     return X, y
 
 
-
-
 def selected_performance_lasso(X, y, plot_name, coef_file):
     alphas = np.array([0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
     model = linear_model.Lasso(random_state=random_state, selection='cyclic')
@@ -138,7 +132,7 @@ def selected_performance_lasso(X, y, plot_name, coef_file):
     mse = mean_squared_error(y, predicted)
     corr = np.corrcoef(y, predicted)[1,0]
     scc, scc_p = stats.spearmanr(y, predicted)
-    mae = mean_absolute_error(y, predicted)    
+    mae = mean_absolute_error(y, predicted)
 
     plot(y, predicted, plot_name)
 
@@ -150,62 +144,51 @@ def selected_performance_lasso(X, y, plot_name, coef_file):
     return r2, mse, mae, corr, scc, scc_p, np.sum(support), aic, bic
 
 
-dep_name='eGFR_BASE'
+if __name__ == "__main__":
+    dep_name = sys.argv[1]
+    ## e.g., eGFR_CKDEPI or eGFR_slope
+    data_dir = sys.argv[2]
+    ## e.g., '../example_data/'
+    meth_file = sys.argv[3]
+    ## e.g., '../example_data/meth_eg.txt'
+    sample_file = sys.argv[4]
+    ## e.g., '../example_data/sample_eg.csv'
+
+    random_state = np.random.RandomState(0)
+
+    out_dir = './output_whole_' + dep_name + '/'
+    final_dir = out_dir + 'final_model/'
+
+
+    if not os.path.exists(final_dir):
+        os.makedirs(final_dir)
+
+
+    selected_feature_file = out_dir + 'final_selected.csv'
+
+
+    print("=============Loading data=============")
+    selected_features = get_selected_features(selected_feature_file)
+    meth, sample = load_data(meth_file, sample_file, selected_features)
+    print("=============Loading data finished=============")
 
 
 
-data_dir = '/research/kevinyip11/ycli/diabetic_complication/predict_covariates/'
+    performance_file = open(final_dir + 'performance.csv', 'w')
+    performance_file.write(','.join(['covariates', 'num_sites', 'r2', 'pcc', 'scc', 'scc_p', 'mse', 'mae', 'AIC', 'BIC']) + '\n')
 
+    for cov in ['with_cov', 'no_cov']:
+        print(cov)
+        print("=============Data preprocessing=============")
+        if cov == 'with_cov':
+            X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name)
+        else:
+            X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name, cov_name = [])
+        print("=============Data preprocessing finished=============")
 
-meth_file = data_dir + 'meth_sites.txt'
-sample_file = data_dir + 'sample_annotation_rmv_join_housemanref_batch_190604.csv'
+        plot_name = final_dir + 'lasso_plot_' + cov
+        coef_file = final_dir + 'lasso_model_' + cov + '.csv'
+        r2, mse, mae, corr, scc, scc_p, num_sites, aic, bic = selected_performance_lasso(X, y, plot_name, coef_file)
+        performance_file.write(','.join(list(map(str, [cov, num_sites, r2, corr, scc, scc_p, mse, mae, aic, bic]))) + '\n')
 
-
-
-
-import os
-random_state = np.random.RandomState(0)
-
-
-out_dir = './output_whole_v1_' + dep_name + '/'
-final_dir = out_dir + 'final_model/'
-
-if not os.path.exists(out_dir):
-    os.makedirs(out_dir)
-
-if not os.path.exists(final_dir):
-    os.makedirs(final_dir)
-
-
-
-
-
-
-selected_feature_file = out_dir + 'final_selected.csv'
-
-
-print("=============Loading data=============")
-selected_features = get_selected_features(selected_feature_file)
-meth, sample = load_data(meth_file, sample_file, selected_features)
-print("=============Loading data finished=============")
-
-
-
-performance_file = open(final_dir + 'performance.csv', 'w')
-performance_file.write(','.join(['covariates', 'num_sites', 'r2', 'pcc', 'scc', 'scc_p', 'mse', 'mae', 'AIC', 'BIC']) + '\n')
-
-for cov in ['with_cov', 'no_cov']:
-    print(cov)
-    print("=============Data preprocessing=============")
-    if cov == 'with_cov':
-        X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name)
-    else:
-        X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name, cov_name = [])
-    print("=============Data preprocessing finished=============")
-    plot_name = final_dir + 'lasso_plot_' + cov
-    coef_file = final_dir + 'lasso_model_' + cov + '.csv'
-    r2, mse, mae, corr, scc, scc_p, num_sites, aic, bic = selected_performance_lasso(X, y, plot_name, coef_file)
-    performance_file.write(','.join(list(map(str, [cov, num_sites, r2, corr, scc, scc_p, mse, mae, aic, bic]))) + '\n')
-    
-
-performance_file.close()
+    performance_file.close()

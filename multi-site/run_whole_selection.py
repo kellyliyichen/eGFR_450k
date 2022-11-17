@@ -384,17 +384,6 @@ if __name__ == "__main__":
         alphas = np.array([0.001, 0.01, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0])
 
 
-
-    print("=============Loading data=============")
-    meth, sample = load_data(meth_file, sample_file)
-    print("=============Loading data finished=============")
-
-    print("=============Data preprocessing=============")
-    X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name)
-    print("=============Data preprocessing finished=============")
-
-
-
     random_state = np.random.RandomState(0)
 
     out_dir = './output_whole_' + dep_name + '/'
@@ -405,6 +394,16 @@ if __name__ == "__main__":
 
     if not os.path.exists(plot_dir_select):
         os.makedirs(plot_dir_select)
+
+
+    print("=============Loading data=============")
+    meth, sample = load_data(meth_file, sample_file)
+    print("=============Loading data finished=============")
+
+    print("=============Data preprocessing=============")
+    X, y = data_preprocess_standardize(meth, sample, dep_name=dep_name)
+    print("=============Data preprocessing finished=============")
+
 
 
     print("=============Feature selection=============")
