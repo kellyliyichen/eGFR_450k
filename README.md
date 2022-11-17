@@ -6,7 +6,7 @@ The paper is available at:
 
 The full list of results (search-based) is available at:
 
-Please contact <yli@sbpdiscovery.org> if you have any questions.
+Please contact me (<yli@sbpdiscovery.org>) if you have any questions.
 
 ### Requirement
 - [Python](https://www.python.org) (>=3.7)
