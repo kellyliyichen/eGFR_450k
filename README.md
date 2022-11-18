@@ -4,7 +4,7 @@ This page contains the main code and example dataset for the single-site and mul
 
 The paper is available at:
 
-The full list of results (search-based) is available [here](https://trigohoang.shinyapps.io/Shiny_APP/)
+The full list of results (search-based) is available [here](https://trigohoang.shinyapps.io/Shiny_APP/).
 
 ## Requirement
 - [Python](https://www.python.org) (>=3.7)
