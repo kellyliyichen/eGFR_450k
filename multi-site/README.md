@@ -11,5 +11,5 @@ Build the final LASSO model on all the data using the selected set of CpG sites.
 ### output_whole_eGFR_CKDEPI
 The final model for baseline eGFR.
 
-### output_whole_eGFR_CKDEPI
+### output_whole_eGFR_slopes
 The final model for eGFR slope.
