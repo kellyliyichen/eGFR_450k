@@ -408,7 +408,7 @@ if __name__ == "__main__":
 
     print("=============Feature selection=============")
     ## select features in all the dataset
-    supports, total = feature_selection(X, y, plot_dir_select, alphas, n_jobs=50)
+    supports, total = feature_selection(X, y, plot_dir_select, alphas, n_jobs=40)
 
 
     eva_model='lasso'
