@@ -19,8 +19,8 @@ Please contact me (<yli@sbpdiscovery.org>) if you have any questions.
 ### example_data
 This folder contains the example methylation data and sample annotations.
 
-### Single-site
+### single-site
 This folder contains the code and example results for running the single-site analysis.
 
-### Multi-site
+### multi-site
 This folder contains the code and example results for running the multi-site analysis.
