@@ -2,9 +2,8 @@
 
 This page contains the main code and example dataset for the single-site and multi-site analysis in the manuscript.
 
-The paper is available at:
 
-The full list of results (search-based) is available [here](https://trigohoang.shinyapps.io/Shiny_APP/).
+The full list of EWAS results (search-based) and the multi-site prediction models are available [here](https://hkdbrmlab.shinyapps.io/DKDEWAS/).
 
 ## Requirement
 - [Python](https://www.python.org) (>=3.7)
