@@ -1,9 +1,9 @@
-# Identification of novel DNA methylation markers associated with kidney function in type 2 diabetes and modeling the progression of diabetic kidney disease through systematic multi-site analysis
+# DNA methylation markers for kidney function and progression of diabetic kidney disease
 
 This page contains the main code and example dataset for the single-site and multi-site analysis in the manuscript.
 
 
-The full list of EWAS results (search-based) and the multi-site prediction models are available [here](https://hkdbrmlab.shinyapps.io/DKDEWAS/).
+The full list of EWAS results (search-based) and the multi-site prediction models are available [here](https://hkdbrmlab.shinyapps.io/DKD_EWAS/).
 
 ## Requirement
 - [Python](https://www.python.org) (>=3.7)
